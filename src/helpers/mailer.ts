@@ -7,12 +7,19 @@ export const sendEmail = async ({email, emailType, userId}:any) => {
         //to do : configure mail for usage
      const hashedToken = await bcryptjs.hash(userId.toString(), 10)
 
-        if(emailType === "VERTIFY"){
-            await User.findByIdAndUpdate(userId,{verifyToken: hashedToken, verifyTokenExpiry: Date.now() + 3600000})
-        } else if(emailType === "RESET"){
-            await User.findByIdAndUpdate(userId,{forgotPasswordToken: hashedToken, forgotPasswordTokenExpiry: Date.now() + 3600000})
-        }
+     console.log(email)
+     console.log(emailType)
+     console.log(userId)
 
+        if(emailType === "VERIFY"){
+            await User.findByIdAndUpdate(userId,
+               {
+                $set: {verifyToken: hashedToken, verifyToeknExpiry: new Date(Date.now() + 3600000)}
+              })
+        } else if(emailType === "RESET"){
+            await User.findByIdAndUpdate(userId,{forgotPasswordToken: hashedToken, forgotPasswordTokenExpiry: new Date(Date.now() + 3600000) })
+        }
+        console.log(Date.now())
         // const transporter = nodemailer.createTransport({
         //     host: "smtp.ethereal.email",
         //     port: 587,
